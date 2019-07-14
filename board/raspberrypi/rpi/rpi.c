@@ -13,6 +13,7 @@
 #include <lcd.h>
 #include <memalign.h>
 #include <mmc.h>
+#include <asm/system.h>
 #include <asm/gpio.h>
 #include <asm/arch/mbox.h>
 #include <asm/arch/msg.h>
@@ -291,6 +292,17 @@ static struct mm_region bcm283x_mem_map[] = {
 };
 #endif
 struct mm_region *mem_map = bcm283x_mem_map;
+
+/* From lowlevel_init.S. */
+extern u64 reserve_memory;
+
+int dram_init_banksize(void)
+{
+	gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE + reserve_memory;
+	gd->bd->bi_dram[0].size = get_effective_memsize() - reserve_memory;
+	return 0;
+}
+
 #endif
 
 int dram_init(void)
@@ -426,7 +438,10 @@ int misc_init_r(void)
 	set_board_info();
 #endif
 	set_serial_number();
-
+#ifdef CONFIG_ARM64
+	if (fw_dtb_pointer)
+		env_set_hex("fdt_addr", (ulong)fw_dtb_pointer);
+#endif
 	return 0;
 }
 

@@ -15,6 +15,14 @@ fw_dtb_pointer:
 	.word 0x0
 #endif
 
+#ifdef CONFIG_ARM64
+.align 8
+.global reserve_memory
+reserve_memory:
+	.dword 0x0
+#endif
+
+
 /*
  * Routine: save_boot_params (called after reset from start.S)
  * Description: save ATAG/FDT address provided by the firmware at boot time
@@ -27,6 +35,8 @@ save_boot_params:
 #ifdef CONFIG_ARM64
 	adr	x8, fw_dtb_pointer
 	str	x0, [x8]
+	adr	x8, reserve_memory
+	str	x1, [x8]
 #else
 	str	r2, fw_dtb_pointer
 #endif
