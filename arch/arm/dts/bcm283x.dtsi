@@ -3,7 +3,6 @@
 #include <dt-bindings/clock/bcm2835-aux.h>
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/interrupt-controller/irq.h>
-#include <dt-bindings/soc/bcm2835-pm.h>
 
 /* firmware-provided startup stubs live here, where the secondary CPUs are
  * spinning.
@@ -56,7 +55,7 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		txp@7e004000 {
+		txp: txp@7e004000 {
 			compatible = "brcm,bcm2835-txp";
 			reg = <0x7e004000 0x20>;
 			interrupts = <1 11>;
@@ -103,7 +102,7 @@
 			brcm,dma-channel-mask = <0x7f35>;
 		};
 
-		pm: watchdog@7e100000 {
+		watchdog@7e100000 {
 			compatible = "brcm,bcm2835-pm", "brcm,bcm2835-pm-wdt";
 			#power-domain-cells = <1>;
 			#reset-cells = <1>;
@@ -131,7 +130,7 @@
 				<&dsi1 0>, <&dsi1 1>, <&dsi1 2>;
 		};
 
-		rng@7e104000 {
+		rng: rng@7e104000 {
 			compatible = "brcm,bcm2835-rng";
 			reg = <0x7e104000 0x10>;
 			interrupts = <2 29>;
@@ -244,6 +243,7 @@
 				brcm,pins = <44 45>;
 				brcm,function = <BCM2835_FSEL_ALT2>;
 			};
+
 			jtag_gpio22: jtag_gpio22 {
 				brcm,pins = <22 23 24 25 26 27>;
 				brcm,function = <BCM2835_FSEL_ALT4>;
@@ -369,22 +369,12 @@
 
 		uart0: serial@7e201000 {
 			compatible = "brcm,bcm2835-pl011", "arm,pl011", "arm,primecell";
-			reg = <0x7e201000 0x1000>;
+			reg = <0x7e201000 0x200>;
 			interrupts = <2 25>;
 			clocks = <&clocks BCM2835_CLOCK_UART>,
 				 <&clocks BCM2835_CLOCK_VPU>;
 			clock-names = "uartclk", "apb_pclk";
 			arm,primecell-periphid = <0x00241011>;
-		};
-
-		sdhost: mmc@7e202000 {
-			compatible = "brcm,bcm2835-sdhost";
-			reg = <0x7e202000 0x100>;
-			interrupts = <2 24>;
-			clocks = <&clocks BCM2835_CLOCK_VPU>;
-			dmas = <&dma 13>;
-			dma-names = "rx-tx";
-			status = "disabled";
 		};
 
 		i2s: i2s@7e203000 {
@@ -400,7 +390,7 @@
 
 		spi: spi@7e204000 {
 			compatible = "brcm,bcm2835-spi";
-			reg = <0x7e204000 0x1000>;
+			reg = <0x7e204000 0x200>;
 			interrupts = <2 22>;
 			clocks = <&clocks BCM2835_CLOCK_VPU>;
 			#address-cells = <1>;
@@ -410,7 +400,7 @@
 
 		i2c0: i2c@7e205000 {
 			compatible = "brcm,bcm2835-i2c";
-			reg = <0x7e205000 0x1000>;
+			reg = <0x7e205000 0x200>;
 			interrupts = <2 21>;
 			clocks = <&clocks BCM2835_CLOCK_VPU>;
 			#address-cells = <1>;
@@ -536,6 +526,32 @@
 					     "dsi1_ddr2",
 					     "dsi1_ddr";
 
+			status = "disabled";
+		};
+
+		csi0: csi@7e800000 {
+			compatible = "brcm,bcm2835-unicam";
+			reg = <0x7e800000 0x800>,
+			      <0x7e802000 0x4>;
+			interrupts = <2 6>;
+			clocks = <&clocks BCM2835_CLOCK_CAM0>;
+			clock-names = "lp";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			#clock-cells = <1>;
+			status = "disabled";
+		};
+
+		csi1: csi@7e801000 {
+			compatible = "brcm,bcm2835-unicam";
+			reg = <0x7e801000 0x800>,
+			      <0x7e802004 0x4>;
+			interrupts = <2 7>;
+			clocks = <&clocks BCM2835_CLOCK_CAM1>;
+			clock-names = "lp";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			#clock-cells = <1>;
 			status = "disabled";
 		};
 
