@@ -438,10 +438,6 @@ int misc_init_r(void)
 	set_board_info();
 #endif
 	set_serial_number();
-#ifdef CONFIG_ARM64
-	if (fw_dtb_pointer)
-		env_set_hex("fdt_addr", (ulong)fw_dtb_pointer);
-#endif
 	return 0;
 }
 
