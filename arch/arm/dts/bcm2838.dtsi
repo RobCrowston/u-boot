@@ -205,7 +205,7 @@
 		};
 
 		emmc2: emmc2@7e340000 {
-			compatible = "brcm,bcm2711-emmc2";
+			compatible = "brcm,bcm2711-emmc2", "brcm,bcm2835-sdhci";
 			status = "okay";
 			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clocks BCM2838_CLOCK_EMMC2>;
